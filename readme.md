@@ -1,0 +1,1 @@
+This extension adds [PSiGate](http://www.psigate.com) as an available payment gateway in [Expresso Store](https://exp-resso.com) 2.1+ for [ExpressionEngine](http://ellislab.com/expressionengine).
