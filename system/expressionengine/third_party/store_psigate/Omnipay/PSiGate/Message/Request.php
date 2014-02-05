@@ -9,48 +9,43 @@ use Omnipay\Common\Message\AbstractRequest;
  */
 class Request extends AbstractRequest
 {
-    public function getEndpoint()
-    {
-	    return ($this->getMode() == 'test') ? 
-	    	'https://devcheckout.psigate.com/HTMLPost/HTMLMessenger' : 
-	    	'https://checkout.psigate.com/HTMLPost/HTMLMessenger';
-    }  
-    
-    public function getKey()
-    {
-        if($this->getMode() == 'test')
-        {
-	        return 'merchantcardcapture200024';
-        }
-        else
-        {
-        	return $this->getStoreKey();
-        }
-    }
+	public function getEndpoint()
+	{
+		return ($this->getMode() == 'test') ? 
+			'https://devcheckout.psigate.com/HTMLPost/HTMLMessenger' : 
+			'https://checkout.psigate.com/HTMLPost/HTMLMessenger';
+	}
+	
+	public function getKey()
+	{
+		return ($this->getMode() == 'test') ?
+			'merchantcardcapture200024' : 
+			$this->getStoreKey();
+	}
 
-    public function send()
-    {
-        return $this->sendData($this->getData());
-    }
-    
+	public function send()
+	{
+		return $this->sendData($this->getData());
+	}
+	
 	public function sendData($data){
-	    
-	    $httpRequest = $this->httpClient->createRequest(
-            'POST',
-            $this->getEndpoint(),
-            null,
-            $data
-        );
-        
-        $httpResponse = $httpRequest->send();
-        return $this->response = new Response($this, $httpResponse->getBody());
-    }
+		
+		$httpRequest = $this->httpClient->createRequest(
+			'POST',
+			$this->getEndpoint(),
+			null,
+			$data
+		);
+		
+		$httpResponse = $httpRequest->send();
+		return $this->response = new Response($this, $httpResponse->getBody());
+	}
 
-    public function getData()
-    {
-        $this->getCard()->validate();
+	public function getData()
+	{
+		$this->getCard()->validate();
 
-        $data = array(
+		$data = array(
 			'MerchantID' => $this->getKey(),
 			'PaymentType' => 'CC',
 			'CardAction' => 0,
@@ -80,42 +75,42 @@ class Request extends AbstractRequest
 			'CardExpYear' => substr($this->getCard()->getExpiryYear(), 2, 2),
 			'CardIDNumber' => $this->getCard()->getCvv() 
 		);
-        
-         if($this->getMode() == 'test')
+		
+		 if($this->getMode() == 'test')
 		{
 			$data['TestResult'] = $this->getTestModeResponse();
 		}
 		
-        return $data;
-    }  
-    
+		return $data;
+	}
+	
 	public function getMode()
-    {
-        return $this->getParameter('mode');
-    }
+	{
+		return $this->getParameter('mode');
+	}
 
-    public function setMode($value)
-    {
-        return $this->setParameter('mode', $value);
-    }
-    
+	public function setMode($value)
+	{
+		return $this->setParameter('mode', $value);
+	}
+	
 	public function getTestModeResponse()
-    {
-        return $this->getParameter('testModeResponse');
-    }
+	{
+		return $this->getParameter('testModeResponse');
+	}
 
 	public function setTestModeResponse($value)
-    {
-        return $this->setParameter('testModeResponse', $value);
-    }
-    
+	{
+		return $this->setParameter('testModeResponse', $value);
+	}
+	
 	public function getStoreKey()
-    {
-        return $this->getParameter('storeKey');
-    }
+	{
+		return $this->getParameter('storeKey');
+	}
 
 	public function setStoreKey($value)
-    {
-        return $this->setParameter('storeKey', $value);
-    }
+	{
+		return $this->setParameter('storeKey', $value);
+	}
 }
